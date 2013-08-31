@@ -1,0 +1,1 @@
+- copy js files (or r.js to build folder)
