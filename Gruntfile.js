@@ -142,6 +142,15 @@ module.exports = function (grunt) {
         manifest: {
             generate: {
                 options: {
+                    network: [
+                    ],
+                    process: function (path) {
+                        // remove documentRoot part of the cached files paths
+                        return path.substring(HTDOCS_PATH.length);
+                    },
+                    hash: true,
+                    timestamp: false,
+                    basePath: ''
                 },
                 src: FILES_TO_CACHE,
                 dest: HTDOCS_PATH + 'manifest.appcache'
