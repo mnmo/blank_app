@@ -1,0 +1,14 @@
+{
+  "name": "Blank App",
+  "version": "0.0.0",
+  "description": "A blank FirefoxOS-compatible web app",
+  "launch_path": "/app.html",
+  "icons": {
+    "128": "/img/icons/app_128.png"
+  },
+  "developer": {
+    "name": "mnmo",
+    "url": "http://apps.mnmo.com.br"
+  },
+  "installs_allowed_from": ["*"]
+}
