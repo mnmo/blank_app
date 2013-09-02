@@ -1,4 +1,4 @@
-/* global module, require, console */
+/* global module, require */
 
 // imports
 var _ = require('lodash');
@@ -19,6 +19,8 @@ module.exports = function (grunt) {
         ],
         HTACCESS_FILE = SOURCE_PATH + '.htaccess',
         HTML_PAGES = [SOURCE_PATH + '**/*.html'],
+        MANIFEST_WEBAPP_NAME = 'manifest.webapp',
+        MANIFEST_WEBAPP_FILE = SOURCE_PATH + MANIFEST_WEBAPP_NAME,
 
         // build generated output
         BUILD_PATH = 'build/',
@@ -128,6 +130,12 @@ module.exports = function (grunt) {
                     dest: HTDOCS_PATH + '.htaccess'
                 }]
             },
+            webapp: {
+                files: [{
+                    src: MANIFEST_WEBAPP_FILE,
+                    dest: HTDOCS_PATH + MANIFEST_WEBAPP_NAME
+                }]
+            },
             html: {
                 files: [{
                     expand: true,
@@ -183,6 +191,13 @@ module.exports = function (grunt) {
             copy_htaccess: {
                 files: HTACCESS_FILE,
                 tasks: ['copy:htaccess'],
+                options: {
+                    spawn: true
+                }
+            },
+            copy_manifest_webapp: {
+                files: MANIFEST_WEBAPP_FILE,
+                tasks: ['copy:webapp'],
                 options: {
                     spawn: true
                 }

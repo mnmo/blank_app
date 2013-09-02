@@ -1,3 +1,5 @@
+- check url for updates
+- generate all icon sizes based on the biggest one
 - copy js files (or r.js to build folder)
 - grunt task to change the vhosts on MAMP and restart apache
     subl /private/etc/hosts
