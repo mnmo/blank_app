@@ -1,3 +1,6 @@
 [submodule "lib/html5-boilerplate"]
 	path = lib/html5-boilerplate
 	url = https://github.com/h5bp/html5-boilerplate.git
+[submodule "lib/ubuntu-html5-theme"]
+	path = lib/ubuntu-html5-theme
+	url = https://github.com/fczuardi/ubuntu-html5-theme.git
