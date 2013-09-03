@@ -1,5 +1,3 @@
-/* global module, require */
-
 // imports
 var _ = require('lodash');
 // gruntfile
@@ -17,7 +15,9 @@ module.exports = function (grunt) {
             '*.js',
             JAVASCRIPT_PATH + '**/*.js'
         ],
-        HTACCESS_FILE = SOURCE_PATH + '.htaccess',
+        HTML5_BOILERPLATE_PATH = 'lib/html5-boilerplate/',
+        HTACCESS_BASE_FILE = HTML5_BOILERPLATE_PATH + '.htaccess',
+        HTACCESS_FILE = SOURCE_PATH + 'htaccess.conf',
         HTML_PAGES = [SOURCE_PATH + '**/*.html'],
         MANIFEST_WEBAPP_NAME = 'manifest.webapp',
         MANIFEST_WEBAPP_FILE = SOURCE_PATH + MANIFEST_WEBAPP_NAME,
@@ -122,14 +122,21 @@ module.exports = function (grunt) {
             }
         },
 
-        //# Other Static files
-        copy: {
+        //# Apache Config
+        concat: {
             htaccess: {
                 files: [{
-                    src: HTACCESS_FILE,
+                    src: [
+                        HTACCESS_BASE_FILE,
+                        HTACCESS_FILE
+                    ],
                     dest: HTDOCS_PATH + '.htaccess'
                 }]
-            },
+            }
+        },
+
+        //# Other Static files
+        copy: {
             webapp: {
                 files: [{
                     src: MANIFEST_WEBAPP_FILE,
@@ -188,9 +195,9 @@ module.exports = function (grunt) {
                     spawn: false
                 }
             },
-            copy_htaccess: {
+            update_htaccess: {
                 files: HTACCESS_FILE,
-                tasks: ['copy:htaccess'],
+                tasks: ['concat:htaccess'],
                 options: {
                     spawn: true
                 }
