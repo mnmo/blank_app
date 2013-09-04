@@ -170,7 +170,7 @@ module.exports = function (grunt) {
         },
 
         // Appcache
-        manifest: {
+        appcache: {
             generate: {
                 options: {
                     network: [
@@ -199,7 +199,7 @@ module.exports = function (grunt) {
             },
             css: {
                 files: CSS_FILES,
-                tasks: ['autoprefixer', 'manifest']
+                tasks: ['autoprefixer', 'appcache']
             },
             assemble: {
                 files: [
@@ -210,11 +210,11 @@ module.exports = function (grunt) {
             },
             copy_html: {
                 files: HTML_PAGES,
-                tasks: ['copy:html', 'manifest']
+                tasks: ['copy:html', 'appcache']
             },
             cache: {
                 files: HTDOCS_PATH + '**/*',
-                tasks: ['manifest']
+                tasks: ['appcache']
             },
             update_htaccess: {
                 files: HTACCESS_FILE,
@@ -232,7 +232,7 @@ module.exports = function (grunt) {
             },
             sass: {
                 files: SASS_FILES,
-                tasks: ['compass', 'manifest'],
+                tasks: ['compass', 'appcache'],
                 options: {
                     spawn: true
                 }
@@ -283,6 +283,7 @@ module.exports = function (grunt) {
 
     //run grunt.loadNpmTasks on each grunt plugin found in your package.json
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+    grunt.renameTask('manifest', 'appcache');
     grunt.loadNpmTasks('assemble');
 
     // the default task can be run just by typing "grunt" on the command line
@@ -294,7 +295,7 @@ module.exports = function (grunt) {
         'assemble',
         'copy',
         'concat',
-        'manifest'
+        'appcache'
     ]);
 
     // lint js files on all linters
