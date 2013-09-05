@@ -1,9 +1,14 @@
 {
   "name": "blank-app",
   "version": "0.0.0",
+  "fullName": "Blank App",
+  "description": "A blank app.",
   "repository": {
     "type": "git",
     "url": "https://github.com/mnmo/blank_app"
+  },
+  "scripts": {
+    "test": "grunt"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
