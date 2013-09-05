@@ -172,7 +172,7 @@ module.exports = function (grunt) {
         },
 
         // Appcache
-        appcache: {
+        manifest: {
             generate: {
                 options: {
                     network: [
@@ -201,71 +201,48 @@ module.exports = function (grunt) {
             },
             css: {
                 files: CSS_FILES,
-                tasks: ['autoprefixer', 'appcache']
+                tasks: ['autoprefixer']
             },
             assemble: {
                 files: [
                     TEMPLATES_PATH + '/**/*.hbs',
                     TEMPLATES_DATA_PATH + '**/*.{json,yml}'
                 ],
-                tasks: ['assemble']
-            },
-            cache: {
-                files: HTDOCS_PATH + '**/*',
-                tasks: ['appcache']
+                tasks: ['assemble'],
+                options: {
+                    spawn: true
+                }
             },
             update_htaccess: {
                 files: HTACCESS_FILE,
-                tasks: ['concat:htaccess'],
+                tasks: ['concat:htaccess']
+            },
+            sass: {
+                files: SASS_FILES,
+                tasks: ['compass'],
                 options: {
                     spawn: true
                 }
             },
-            sass: {
-                files: SASS_FILES,
-                tasks: ['compass', 'appcache'],
-                options: {
-                    spawn: true
-                }
+            cache: {
+                files: FILES_TO_CACHE,
+                tasks: ['manifest']
             }
         }
     });
 
-    // on watch events update just the modified files
+    // on watch events configure certain tasks to only run on changed file
     grunt.event.on('watch', function (action, filepath) {
-        var fileExtension = filepath.split('.').pop(),
-            jshintConfig,
-            jslintConfig,
-            gjslintConfig,
-            autoprefixerConfig,
-            isJSFile = (fileExtension === 'js'),
-            isCSSFile = (fileExtension === 'css');
-
-        if (action === 'deleted') { return; }
-        if (isJSFile) {
-            jshintConfig = grunt.config.get('jshint');
-            jslintConfig = grunt.config.get('jslint');
-            gjslintConfig = grunt.config.get('gjslint');
-            jshintConfig.all.src = filepath;
-            jslintConfig.all.src = filepath;
-            gjslintConfig.all.src = filepath;
-            grunt.config.set('jsvalidate', jshintConfig);
-            grunt.config.set('jshint', jshintConfig);
-            grunt.config.set('jslint', jslintConfig);
-            grunt.config.set('gjslint', jslintConfig);
-        } else if (isCSSFile) {
-            autoprefixerConfig = grunt.config.get('autoprefixer');
-            autoprefixerConfig.all.files[0] = {
-                src: filepath,
-                dest: filepath
-            };
-            grunt.config.set('autoprefixer', autoprefixerConfig);
-        }
+        grunt.verbose('Watch event', filepath, action);
+        grunt.config(['jsvalidate', 'all'], filepath);
+        grunt.config(['jshint', 'all'], filepath);
+        grunt.config(['jslint', 'all'], filepath);
+        grunt.config(['gjslint', 'all'], filepath);
+        grunt.config(['autoprefixer', 'all'], filepath);
     });
 
     //run grunt.loadNpmTasks on each grunt plugin found in your package.json
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
-    grunt.renameTask('manifest', 'appcache');
     grunt.loadNpmTasks('assemble');
 
     grunt.registerMultiTask(
@@ -294,6 +271,7 @@ module.exports = function (grunt) {
         }
     );
 
+
     // the default task can be run just by typing "grunt" on the command line
     grunt.registerTask('default', [
         'compass',
@@ -303,7 +281,7 @@ module.exports = function (grunt) {
         'assemble',
         'concat',
         'openwebapp',
-        'appcache'
+        'manifest'
     ]);
 
     // lint js files on all linters
