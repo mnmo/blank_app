@@ -19,9 +19,7 @@ module.exports = function (grunt) {
         JAVASCRIPT_SOURCES      =   ['*.js', JAVASCRIPT_PATH + '**/*.js'],
         HTACCESS_BASE_FILE      =   HTML5_BOILERPLATE_PATH + '.htaccess',
         HTACCESS_FILE           =   SOURCE_PATH + 'htaccess.conf',
-        HTML_PAGES              =   [SOURCE_PATH + '**/*.html'],
         MANIFEST_WEBAPP_NAME    =   'manifest.webapp',
-        MANIFEST_WEBAPP_FILE    =   SOURCE_PATH + MANIFEST_WEBAPP_NAME,
 
         // build generated output
         BUILD_PATH              =   'build/',
@@ -152,21 +150,24 @@ module.exports = function (grunt) {
             }
         },
 
-        // Other Static files
-        copy: {
-            webapp: {
-                files: [{
-                    src: MANIFEST_WEBAPP_FILE,
-                    dest: HTDOCS_PATH + MANIFEST_WEBAPP_NAME
-                }]
+        // Open Web App Manifest
+        openwebapp: {
+            options: {
+                name: '<%= pkg.fullName %>',
+                version: '<%= pkg.version %>',
+                description: '<%= pkg.description %>',
+                launch_path: '/app.html',
+                developer: {
+                    name: '<%= pkg.author.name %>',
+                    url: '<%= pkg.author.url %>'
+                },
+                // icons: {
+                //     "128": "/img/icons/app_128.png"
+                // },
+                installs_allowed_from: ['*']
             },
-            html: {
-                files: [{
-                    expand: true,
-                    cwd: SOURCE_PATH,
-                    src: '**/*.html',
-                    dest: HTDOCS_PATH
-                }]
+            all: {
+                dest: HTDOCS_PATH + MANIFEST_WEBAPP_NAME
             }
         },
 
@@ -209,10 +210,6 @@ module.exports = function (grunt) {
                 ],
                 tasks: ['assemble']
             },
-            copy_html: {
-                files: HTML_PAGES,
-                tasks: ['copy:html', 'appcache']
-            },
             cache: {
                 files: HTDOCS_PATH + '**/*',
                 tasks: ['appcache']
@@ -220,13 +217,6 @@ module.exports = function (grunt) {
             update_htaccess: {
                 files: HTACCESS_FILE,
                 tasks: ['concat:htaccess'],
-                options: {
-                    spawn: true
-                }
-            },
-            copy_manifest_webapp: {
-                files: MANIFEST_WEBAPP_FILE,
-                tasks: ['copy:webapp'],
                 options: {
                     spawn: true
                 }
@@ -248,10 +238,8 @@ module.exports = function (grunt) {
             jslintConfig,
             gjslintConfig,
             autoprefixerConfig,
-            copyConfig,
             isJSFile = (fileExtension === 'js'),
-            isCSSFile = (fileExtension === 'css'),
-            justCopy = _.contains(['html', 'htaccess'], fileExtension);
+            isCSSFile = (fileExtension === 'css');
 
         if (action === 'deleted') { return; }
         if (isJSFile) {
@@ -272,13 +260,6 @@ module.exports = function (grunt) {
                 dest: filepath
             };
             grunt.config.set('autoprefixer', autoprefixerConfig);
-        } else if (justCopy) {
-            copyConfig = grunt.config.get('copy');
-            copyConfig.html.files[0] = {
-                src: filepath,
-                dest: HTDOCS_PATH + filepath.substring(SOURCE_PATH.length)
-            };
-            grunt.config.set('copy', copyConfig);
         }
     });
 
@@ -287,6 +268,32 @@ module.exports = function (grunt) {
     grunt.renameTask('manifest', 'appcache');
     grunt.loadNpmTasks('assemble');
 
+    grunt.registerMultiTask(
+        'openwebapp',
+        'generate manifest.webapp file',
+        function () {
+            var task_options = {},
+                target_options,
+                done = this.async();
+            if (grunt.config(this.name).options) {
+                task_options = grunt.config(this.name).options;
+            }
+            if (this.target) {
+                target_options = grunt.config([this.name, this.target]).options;
+                // merge ("extend") the two option objects
+                _.assign(task_options, target_options);
+            }
+            this.files.forEach(function (item) {
+                if (item.dest) {
+                    grunt.file.write(item.dest,
+                        JSON.stringify(task_options, null, 4));
+                    grunt.log.writeln('File "' + item.dest + '" created.');
+                }
+            });
+            done(true);
+        }
+    );
+
     // the default task can be run just by typing "grunt" on the command line
     grunt.registerTask('default', [
         'compass',
@@ -294,8 +301,8 @@ module.exports = function (grunt) {
         'jsvalidate',
         JS_LINTER,
         'assemble',
-        'copy',
         'concat',
+        'openwebapp',
         'appcache'
     ]);
 

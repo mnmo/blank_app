@@ -3,6 +3,11 @@
   "version": "0.0.0",
   "fullName": "Blank App",
   "description": "A blank app.",
+  "author": {
+    "name": "Fabricio C Zuardi",
+    "email": "fabricio@fabricio.org",
+    "url": "http://fabricio.org"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/mnmo/blank_app"
