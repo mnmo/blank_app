@@ -25,5 +25,8 @@
     "grunt-manifest": "~0.4.0",
     "grunt-contrib-concat": "~0.3.0",
     "assemble": "~0.4.5"
+  },
+  "engines": {
+    "node": ">=0.8"
   }
 }
