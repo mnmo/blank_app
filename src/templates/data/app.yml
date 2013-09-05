@@ -1,2 +1,3 @@
-title: Blank App
-description: A blank web app.
+appcache: manifest.appcache
+title: <%= pkg.fullName %>
+description: <%= pkg.description %>

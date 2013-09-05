@@ -68,6 +68,7 @@ module.exports = function (grunt) {
 // Grunt tasks
 // ---------------------------------------------------------------------------
     grunt.initConfig({
+        pkg: grunt.file.readJSON('package.json'),
 
         // Stylesheets
         compass: {
@@ -136,10 +137,10 @@ module.exports = function (grunt) {
         assemble: {
             options: {
                 flatten: true,
-                layout: 'layout.hbs',
                 layoutdir: TEMPLATES_LAYOUTS_PATH,
                 partials: [TEMPLATES_PARTIALS_PATH + '**/*.hbs'],
-                data: [TEMPLATES_DATA_PATH + '**/*.{json,yml}']
+                data: [TEMPLATES_DATA_PATH + '**/*.{json,yml}'],
+                pkg: '<%= pkg %>'
             },
             pages: {
                 files: [{
