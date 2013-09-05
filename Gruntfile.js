@@ -171,6 +171,46 @@ module.exports = function (grunt) {
             }
         },
 
+        //good html indentation
+        prettify: {
+            options: {
+                indent: 4,
+                indent_char: ' ',
+                wrap_line_length: 78
+                // brace_style: 'expand',
+                // unformatted: ['a', 'sub', 'sup', 'b', 'i', 'u']
+            },
+            all: {
+                files: [{
+                    expand: true,
+                    cwd: HTDOCS_PATH,
+                    src: '**/*.html',
+                    dest: HTDOCS_PATH
+                }]
+            }
+        },
+
+        //HTML Validation
+        validation: {
+            options: {
+                reportpath: '.temp/validation-report.json',
+                path: '.temp/validation-staus.json'
+            },
+            all: {
+                options: {
+                    reset: true
+                },
+                files: [{
+                    src: HTML_FILES
+                }]
+            },
+            repeat: {
+                files: [{
+                    src: HTML_FILES
+                }]
+            }
+        },
+
         // Appcache
         manifest: {
             generate: {
@@ -274,11 +314,13 @@ module.exports = function (grunt) {
 
     // the default task can be run just by typing "grunt" on the command line
     grunt.registerTask('default', [
-        'compass',
-        'autoprefixer',
         'jsvalidate',
         JS_LINTER,
         'assemble',
+        'compass',
+        'prettify',
+        'validation:all',
+        'autoprefixer',
         'concat',
         'openwebapp',
         'manifest'
