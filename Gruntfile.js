@@ -75,6 +75,7 @@ module.exports = function (grunt) {
                 sassDir: SASS_PATH,
                 cssDir: CSS_PATH,
                 bundleExec: true,
+                relativeAssets: true,
                 fontsDir: FONTS_PATH
             },
             dev: {
