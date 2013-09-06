@@ -1,3 +1,4 @@
+- remove fonts.css from the ubuntu-html5-theme repo
 - patch handlebars so that partials have a proper identation
 - check url for updates
 - generate all icon sizes based on the biggest one
